@@ -23,6 +23,26 @@ public class WorkOrderDetailsActivity extends AppCompatActivity {
     private Spinner spinnerId;
 
 
+
+    private boolean textFieldsValid() {
+        boolean validTextFields = true;
+
+        if (chargedId.getText().toString().isEmpty() || editableDescriptionId.getText().toString().isEmpty()) {
+            validTextFields = false;
+            Toast.makeText(getApplicationContext(), "Please Fill in all values before saving!", Toast.LENGTH_LONG).show();
+        }
+        //Had to use regex here since parsing to an int or double crashed gave fatal errors.
+        if (!chargedId.getText().toString().matches("[0-9]+")){
+            validTextFields = false;
+            Toast.makeText(getApplicationContext(),"Please fill in a round number", Toast.LENGTH_SHORT).show();
+        }
+        if (!editableDescriptionId.getText().toString().matches("[a-zA-Z]*(\\s)*[\\.\\,]*")){
+            Toast.makeText(getApplicationContext(), "Only use allowed characters", Toast.LENGTH_SHORT).show();
+            validTextFields = false;
+        }
+        return validTextFields;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -31,103 +51,71 @@ public class WorkOrderDetailsActivity extends AppCompatActivity {
         String firstname = getIntent().getStringExtra("firstname");
         String lastname = getIntent().getStringExtra("lastname");
         int id = getIntent().getIntExtra("id", 0);
-        editableDescriptionId = (EditText) findViewById(R.id.editableDescriptionId);
-        detailsDescriptionId = (EditText) findViewById(R.id.detailsDescriptionId);
-        chargedId = (EditText) findViewById(R.id.chargedId);
-        welcomeDetailsId = (TextView) findViewById(R.id.welcomeDetailsId);
-        saveId = (Button) findViewById(R.id.saveId);
-        returnId = (Button) findViewById(R.id.returnId);
-        spinnerId = (Spinner) findViewById(R.id.spinnerId);
-        viewModel.getDetails(id).observe(this, new Observer<WorkOrderEntity>() {
-            @Override
-            public void onChanged(WorkOrderEntity workOrderEntity) {
-                welcomeDetailsId.setText("ID: " + workOrderEntity.getId() + ", Customer: " + workOrderEntity.getCustomerName());
-                detailsDescriptionId.setText(workOrderEntity.getDetailedProblemDescription());
-                editableDescriptionId.setText(workOrderEntity.getRepairInformation());
-                String amount = chargedId.getText().toString();
-                if (!amount.matches("[0-9]+")) {
-                    Toast.makeText(getApplicationContext(), "Please fill in a round number", Toast.LENGTH_SHORT).show();
-                    if (amount.matches("[0-9]+")) {
-                        chargedId.setText(amount);
-                    }
+        editableDescriptionId = findViewById(R.id.editableDescriptionId);
+        detailsDescriptionId = findViewById(R.id.detailsDescriptionId);
+        chargedId = findViewById(R.id.chargedId);
+        welcomeDetailsId = findViewById(R.id.welcomeDetailsId);
+        saveId = findViewById(R.id.saveId);
+        returnId = findViewById(R.id.returnId);
+        spinnerId = findViewById(R.id.spinnerId);
+        viewModel.getDetails(id).observe(this, workOrderEntity -> {
+            welcomeDetailsId.setText("ID: " + workOrderEntity.getId() + ", Customer: " + workOrderEntity.getCustomerName());
+            detailsDescriptionId.setText(workOrderEntity.getDetailedProblemDescription());
+            editableDescriptionId.setText(workOrderEntity.getRepairInformation());
+            chargedId.setText(workOrderEntity.getCharged());
 
-                    ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getApplicationContext(),
-                            R.array.planets_array, android.R.layout.simple_spinner_item);
-                    spinnerId.setAdapter(adapter);
+            ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getApplicationContext(),
+                    R.array.planets_array, android.R.layout.simple_spinner_item);
+            spinnerId.setAdapter(adapter);
 
 
-                    if (spinnerId.getSelectedItemPosition() == 0)
-                        workOrderEntity.setPaymentMethod("Cash");
-                    if (spinnerId.getSelectedItemPosition() == 1)
-                        workOrderEntity.setPaymentMethod("Payconiq");
-                    if (spinnerId.getSelectedItemPosition() == 2)
-                        workOrderEntity.setPaymentMethod("Bancontact");
 
-                    if (workOrderEntity.getProcessed() == true) {
-                        editableDescriptionId.setEnabled(false);
-                        chargedId.setText(workOrderEntity.getCharged());
-                        chargedId.setEnabled(false);
-                        spinnerId.setEnabled(false);
-                        saveId.setVisibility(View.INVISIBLE);
 
-                        if (workOrderEntity.getPaymentMethod() == "Cash") {
-                            spinnerId.setSelection((int) adapter.getItemId(0));
-                        }
-                        if (workOrderEntity.getPaymentMethod() == "Payconiq") {
-                            spinnerId.setSelection((int) adapter.getItemId(1));
-                        }
-                        if (workOrderEntity.getPaymentMethod() == "Bancontact") {
-                            spinnerId.setSelection((int) adapter.getItemId(2));
-                        }
-                        //spinnerId.setSelection((int) adapter.getItemId(0));
-                    }
-                    saveId.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            if (!editableDescriptionId.getText().toString().isEmpty() || !chargedId.getText().toString().isEmpty()) {
-                                String problemDesription = editableDescriptionId.getText().toString();
-                                String chargedAmount = chargedId.getText().toString();
-                                if (workOrderEntity.getPaymentMethod() == "Cash") {
-                                    spinnerId.setSelection((int) adapter.getItemId(0));
-                                    spinnerId.setEnabled(false);
-                                }
-                                if (workOrderEntity.getPaymentMethod() == "Payconiq") {
-                                    spinnerId.setSelection((int) adapter.getItemId(1));
-                                    spinnerId.setEnabled(false);
-                                }
-                                if (workOrderEntity.getPaymentMethod() == "Bancontact") {
-                                    spinnerId.setSelection((int) adapter.getItemId(2));
-                                    spinnerId.setEnabled(false);
-                                }
-                                workOrderEntity.setRepairInformation(problemDesription);
-                                workOrderEntity.setCharged(chargedAmount);
-                                workOrderEntity.setProcessed(true);
-
-                                viewModel.updateWorkOrder(workOrderEntity);
-                                Toast.makeText(getApplicationContext(), "Saved", Toast.LENGTH_SHORT).show();
-                                Intent saveIntent = new Intent(WorkOrderDetailsActivity.this, HomescreenAcitivity.class);
-                                saveIntent.putExtra("name", firstname);
-                                saveIntent.putExtra("lastname", lastname);
-                                startActivity(saveIntent);
-                            } else {
-                                Toast.makeText(getApplicationContext(), "Please Fill in all values before saving!", Toast.LENGTH_SHORT).show();
-                            }
-
-                        }
-
-                    });
-                    returnId.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            Intent returnIntent = new Intent(WorkOrderDetailsActivity.this, HomescreenAcitivity.class);
-                            returnIntent.putExtra("name", firstname);
-                            returnIntent.putExtra("lastname", lastname);
-                            startActivity(returnIntent);
-                        }
-                    });
-                }
+            if (workOrderEntity.getProcessed()) {
+                editableDescriptionId.setEnabled(false);
+                chargedId.setEnabled(false);
+                spinnerId.setEnabled(false);
+                saveId.setVisibility(View.INVISIBLE);
+                if (spinnerId.getSelectedItemPosition() == 0)
+                    workOrderEntity.setPaymentMethod("Cash");
+                if (spinnerId.getSelectedItemPosition() == 1)
+                    workOrderEntity.setPaymentMethod("Payconiq");
+                if (spinnerId.getSelectedItemPosition() == 2)
+                    workOrderEntity.setPaymentMethod("Bancontact");
+                if (workOrderEntity.getPaymentMethod() == "Cash")
+                    spinnerId.setSelection((int) adapter.getItemId(0));
+                if (workOrderEntity.getPaymentMethod() == "Payconiq")
+                    spinnerId.setSelection((int) adapter.getItemId(1));
+                if (workOrderEntity.getPaymentMethod() == "Bancontact")
+                    spinnerId.setSelection((int) adapter.getItemId(2));
             }
-        });
+            saveId.setOnClickListener(v -> {
+                if (textFieldsValid()) {
+                    String problemDesription;
+                    problemDesription = editableDescriptionId.getText().toString();
+                    String amount = chargedId.getText().toString();
 
+                    workOrderEntity.setCharged(amount);
+                    workOrderEntity.setRepairInformation(problemDesription);
+                    workOrderEntity.setProcessed(true);
+
+                    viewModel.updateWorkOrder(workOrderEntity);
+                    Toast.makeText(getApplicationContext(), "Saved", Toast.LENGTH_SHORT).show();
+                    Intent saveIntent = new Intent(WorkOrderDetailsActivity.this, HomescreenAcitivity.class);
+                    saveIntent.putExtra("name", firstname);
+                    saveIntent.putExtra("lastname", lastname);
+                    startActivity(saveIntent);
+                }
+            });
+
+            returnId.setOnClickListener(v -> {
+                Intent returnIntent = new Intent(WorkOrderDetailsActivity.this, HomescreenAcitivity.class);
+                returnIntent.putExtra("name", firstname);
+                returnIntent.putExtra("lastname", lastname);
+                startActivity(returnIntent);
+            });
+        });
     }
+
 }
+
