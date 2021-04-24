@@ -68,7 +68,6 @@ public class WorkOrderEntity {
         return city;
     }
 
-
     public String getAssignedUser() {
         return assignedUser;
     }

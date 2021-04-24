@@ -11,7 +11,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 public class WorkOrderDetailsActivity extends AppCompatActivity {
@@ -22,8 +21,6 @@ public class WorkOrderDetailsActivity extends AppCompatActivity {
     private Button saveId, returnId;
     private Spinner spinnerId;
 
-
-
     private boolean textFieldsValid() {
         boolean validTextFields = true;
 
@@ -32,11 +29,11 @@ public class WorkOrderDetailsActivity extends AppCompatActivity {
             Toast.makeText(getApplicationContext(), "Please Fill in all values before saving!", Toast.LENGTH_LONG).show();
         }
         //Had to use regex here since parsing to an int or double crashed gave fatal errors.
-        if (!chargedId.getText().toString().matches("[0-9]+")){
+        if (!chargedId.getText().toString().matches("[0-9]+")) {
             validTextFields = false;
-            Toast.makeText(getApplicationContext(),"Please fill in a round number", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), "Please fill in a round number", Toast.LENGTH_SHORT).show();
         }
-        if (!editableDescriptionId.getText().toString().matches("[a-zA-Z]*(\\s)*[\\.\\,]*")){
+        if (!editableDescriptionId.getText().toString().matches("[a-zA-Z]*(\\s)*[.,]*")) {
             Toast.makeText(getApplicationContext(), "Only use allowed characters", Toast.LENGTH_SHORT).show();
             validTextFields = false;
         }
@@ -65,38 +62,41 @@ public class WorkOrderDetailsActivity extends AppCompatActivity {
             chargedId.setText(workOrderEntity.getCharged());
 
             ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getApplicationContext(),
-                    R.array.planets_array, android.R.layout.simple_spinner_item);
+                    R.array.array,
+                    android.R.layout.simple_spinner_item);
             spinnerId.setAdapter(adapter);
-
-
-
 
             if (workOrderEntity.getProcessed()) {
                 editableDescriptionId.setEnabled(false);
                 chargedId.setEnabled(false);
                 spinnerId.setEnabled(false);
                 saveId.setVisibility(View.INVISIBLE);
-                if (spinnerId.getSelectedItemPosition() == 0)
-                    workOrderEntity.setPaymentMethod("Cash");
-                if (spinnerId.getSelectedItemPosition() == 1)
-                    workOrderEntity.setPaymentMethod("Payconiq");
-                if (spinnerId.getSelectedItemPosition() == 2)
-                    workOrderEntity.setPaymentMethod("Bancontact");
-                if (workOrderEntity.getPaymentMethod() == "Cash")
-                    spinnerId.setSelection((int) adapter.getItemId(0));
-                if (workOrderEntity.getPaymentMethod() == "Payconiq")
-                    spinnerId.setSelection((int) adapter.getItemId(1));
-                if (workOrderEntity.getPaymentMethod() == "Bancontact")
-                    spinnerId.setSelection((int) adapter.getItemId(2));
             }
             saveId.setOnClickListener(v -> {
+                //This part does not work for some weird reason...
+                if (spinnerId.getSelectedItemId() == 0)
+                    workOrderEntity.setPaymentMethod("Cash");
+                if (workOrderEntity.getPaymentMethod() == "Cash") {
+                    spinnerId.setSelection(0);
+                }
+                if (spinnerId.getSelectedItemId() == 1)
+                    workOrderEntity.setPaymentMethod("Payconiq");
+                if (workOrderEntity.getPaymentMethod()== "Payconiq") {
+                    spinnerId.setSelection(1);
+                }
+                if (spinnerId.getSelectedItemId() == 2)
+                    workOrderEntity.setPaymentMethod("Bancontact");
+                if (workOrderEntity.getPaymentMethod() == "Bancontact") {
+                    spinnerId.setSelection(2);
+                }
+
                 if (textFieldsValid()) {
-                    String problemDesription;
-                    problemDesription = editableDescriptionId.getText().toString();
+                    String problemDescription;
+                    problemDescription = editableDescriptionId.getText().toString();
                     String amount = chargedId.getText().toString();
 
                     workOrderEntity.setCharged(amount);
-                    workOrderEntity.setRepairInformation(problemDesription);
+                    workOrderEntity.setRepairInformation(problemDescription);
                     workOrderEntity.setProcessed(true);
 
                     viewModel.updateWorkOrder(workOrderEntity);
@@ -107,7 +107,6 @@ public class WorkOrderDetailsActivity extends AppCompatActivity {
                     startActivity(saveIntent);
                 }
             });
-
             returnId.setOnClickListener(v -> {
                 Intent returnIntent = new Intent(WorkOrderDetailsActivity.this, HomescreenAcitivity.class);
                 returnIntent.putExtra("name", firstname);
@@ -116,6 +115,5 @@ public class WorkOrderDetailsActivity extends AppCompatActivity {
             });
         });
     }
-
 }
 

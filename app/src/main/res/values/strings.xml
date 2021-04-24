@@ -1,5 +1,5 @@
 <resources>
-    <string-array name="planets_array">
+    <string-array name="array">
         <item>Cash</item>
         <item>Payconiq</item>
         <item>Bancontact</item>
