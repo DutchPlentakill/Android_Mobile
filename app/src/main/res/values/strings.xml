@@ -1,0 +1,9 @@
+<resources>
+    <string-array name="planets_array">
+        <item>Cash</item>
+        <item>Payconiq</item>
+        <item>Bancontact</item>
+    </string-array>
+    <string name="app_name">ThirdTimeIsACharm</string>
+    <string name="hint">Hint</string>
+</resources>

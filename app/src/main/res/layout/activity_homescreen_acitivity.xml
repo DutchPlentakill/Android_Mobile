@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".HomescreenAcitivity"
+    android:stretchColumns="4"
+    android:id="@+id/tableLayout">
+
+    <TextView
+        android:id="@+id/welcomeId"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Welcome "
+        android:textStyle="bold"
+        style="@style/TextAppearance.AppCompat.Headline"
+        android:textSize="25sp"
+        android:textAlignment="center"
+        android:layout_margin="20sp"
+        android:gravity="center_horizontal" />
+
+    <TableRow android:layout_width="match_parent">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_gravity="center"
+            android:id="@+id/NameId"
+            android:padding="15dp"
+            android:text="Name" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_gravity="center"
+            android:id="@+id/Cityid"
+            android:padding="15dp"
+            android:text="City" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_gravity="center"
+            android:id="@+id/DeviceId"
+            android:padding="15dp"
+            android:text="Device" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_gravity="center"
+            android:id="@+id/Problem_codeId"
+            android:padding="15dp"
+            android:text="Problem Code" />
+
+
+
+
+
+        <TextView
+            android:id="@+id/ProcessedId"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+
+            android:layout_gravity="center"
+            android:padding="15dp"
+            android:text="Processed" />
+
+    </TableRow>
+
+</TableLayout>

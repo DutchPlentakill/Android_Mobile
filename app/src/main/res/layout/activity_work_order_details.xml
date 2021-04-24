@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".WorkOrderDetailsActivity">
+
+
+    <TextView
+        android:id="@+id/welcomeDetailsId"
+        style="@style/TextAppearance.AppCompat.Headline"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="20sp"
+        android:gravity="center_horizontal"
+        android:textAlignment="center"
+        android:textSize="25sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="25sp"
+        android:text="Detailed description:"/>
+
+    <EditText
+        android:id="@+id/detailsDescriptionId"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:autofillHints="@string/hint"
+        android:clickable="false"
+        android:cursorVisible="false"
+        android:drawablePadding="50dp"
+        android:focusable="false"
+        android:hint="@string/hint"
+        android:textSize="20sp"
+        android:inputType="textMultiLine"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="25sp"
+        android:text="Your description:" />
+    <EditText
+        android:id="@+id/editableDescriptionId"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:hint="Fill in your descirption"
+        android:inputType="textMultiLine"/>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="25sp"
+        android:text="Payment:" />
+    <Spinner
+        android:id="@+id/spinnerId"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+    <EditText
+        android:id="@+id/chargedId"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:hint="How much did you charge?"
+        android:inputType="textMultiLine"/>
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="SAVE"
+        android:id="@+id/saveId"/>
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="RETURN"
+        android:id="@+id/returnId"/>
+
+</LinearLayout>
