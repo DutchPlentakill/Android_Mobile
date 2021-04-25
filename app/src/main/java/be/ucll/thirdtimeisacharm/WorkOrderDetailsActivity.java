@@ -33,7 +33,7 @@ public class WorkOrderDetailsActivity extends AppCompatActivity {
             validTextFields = false;
             Toast.makeText(getApplicationContext(), "Please fill in a round number", Toast.LENGTH_SHORT).show();
         }
-        if (!editableDescriptionId.getText().toString().matches("[a-zA-Z]*(\\s)*[.,]*")) {
+        if (!editableDescriptionId.getText().toString().matches("[a-zA-Z0-9., ]*(\\s)*")) {
             Toast.makeText(getApplicationContext(), "Only use allowed characters", Toast.LENGTH_SHORT).show();
             validTextFields = false;
         }
